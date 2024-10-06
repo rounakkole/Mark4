@@ -4,6 +4,7 @@ using Mark4.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Mark4.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241006115942_ApplicationDbContext_ApplicationUser_Table")]
+    partial class ApplicationDbContext_ApplicationUser_Table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -334,6 +337,8 @@ namespace Mark4.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ExchangeId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -546,7 +551,8 @@ namespace Mark4.Migrations
                     b.HasOne("Mark3.Data.Tables.ExchangeTable1", "ExchangeTable1")
                         .WithMany("ApplicationUsers")
                         .HasForeignKey("ExchangeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("ExchangeTable1");
                 });

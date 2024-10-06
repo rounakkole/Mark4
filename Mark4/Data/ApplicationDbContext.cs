@@ -43,7 +43,6 @@ namespace Mark4.Data
                 .HasOne(c => c.ExchangeTable1)
                 .WithMany(u => u.ApplicationUsers)
                 .HasForeignKey(c => c.ExchangeId)
-                .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<ApplicationUser>()
