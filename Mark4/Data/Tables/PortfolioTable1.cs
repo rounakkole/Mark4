@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Mark4.Data;
+using System.ComponentModel.DataAnnotations;
 
 namespace Mark3.Data.Tables
 {
@@ -15,7 +16,7 @@ namespace Mark3.Data.Tables
         [DataType(DataType.Date)]
         public DateOnly CreatedDate { get; set; }
 
-        public UserTable1 UserTable1 { get; set; } // Required reference navigation to principal
+        public ApplicationUser ApplicationUser { get; set; } // Required reference navigation to principal
         public InstrumentTable1 InstrumentTable1 { get; set; } // Required reference navigation to principal
     }
 }

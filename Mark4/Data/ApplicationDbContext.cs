@@ -1,4 +1,5 @@
 using Mark3.Data.Tables;
+using Mark4.Data;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,7 +12,7 @@ namespace Mark4.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<PortfolioTable1>()
-                .HasOne(c => c.UserTable1)
+                .HasOne(c => c.ApplicationUser)
                 .WithMany(u => u.PortfolioTable1s)
                 .HasForeignKey(c => c.UserId)
                 .IsRequired()
@@ -38,16 +39,16 @@ namespace Mark4.Data
                 .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<UserTable1>()
+            modelBuilder.Entity<ApplicationUser>()
                 .HasOne(c => c.ExchangeTable1)
-                .WithMany(u => u.UserTable1s)
+                .WithMany(u => u.ApplicationUsers)
                 .HasForeignKey(c => c.ExchangeId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<UserTable1>()
+            modelBuilder.Entity<ApplicationUser>()
                 .HasOne(c => c.SetupTable1)
-                .WithOne(u => u.UserTable1)
+                .WithOne(u => u.ApplicationUser)
                 .HasForeignKey<SetupTable1>(c => c.UserId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
