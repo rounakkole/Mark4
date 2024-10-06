@@ -15,7 +15,12 @@
     <a href="portfoliotable1s/create">Create New</a>
 </p>
 
-<QuickGrid Class="table" Items="context.PortfolioTable1" Pagination="state">
+<p>
+    <input type="search" @bind="GridFilter" @bind:event="oninput" />
+</p>
+
+<!-- <QuickGrid Class="table" Items="context.PortfolioTable1" Pagination="state"> -->
+<QuickGrid Class="table" Items="FilteredGrid" Pagination="state">
     <PropertyColumn Property="portfoliotable1 => portfoliotable1.UserId" Title="User" />
     <PropertyColumn Property="portfoliotable1 => portfoliotable1.InstrumentId" Title="Instrument" InitialSortDirection="SortDirection.Ascending" IsDefaultSortColumn="true" Sortable="true" />
     <PropertyColumn Property="portfoliotable1 => portfoliotable1.AveragePrice" />
@@ -33,12 +38,17 @@
 
 @code {
     PaginationState state = new PaginationState { ItemsPerPage = 10 };
+    //learn.microsoft.com/en-us/aspnet/core/blazor/components/quickgrid?view=aspnetcore-8.0&tabs=visual-studio
+    private string GridFilter = string.Empty;
+
     private ApplicationDbContext context = default!;
 
     protected override void OnInitialized()
     {
         context = DbFactory.CreateDbContext();
     }
+    //private IQueryable<PortfolioTable1> FilteredGrid => context.PortfolioTable1.Where(m => m.UserId!.Contains(GridFilter));
+    private IQueryable<PortfolioTable1> FilteredGrid => context.PortfolioTable1.Where(m => m.InstrumentTable1.InSymbolDescription!.Contains(GridFilter));
 
     public async ValueTask DisposeAsync() => await context.DisposeAsync();
 }
