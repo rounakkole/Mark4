@@ -1,0 +1,74 @@
+﻿@page "/portfoliotable1s/create"
+@using Microsoft.EntityFrameworkCore
+@using Mark3.Data.Tables
+@inject IDbContextFactory<Mark4.Data.ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>PortfolioTable1</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="PortfolioTable1" OnValidSubmit="AddPortfolioTable1" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" />
+            <div class="mb-3">
+                <label for="userid" class="form-label">UserId:</label> 
+                <InputText id="userid" @bind-Value="PortfolioTable1.UserId" class="form-control" /> 
+                <ValidationMessage For="() => PortfolioTable1.UserId" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="instrumentid" class="form-label">InstrumentId:</label> 
+                <InputNumber id="instrumentid" @bind-Value="PortfolioTable1.InstrumentId" class="form-control" /> 
+                <ValidationMessage For="() => PortfolioTable1.InstrumentId" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="averageprice" class="form-label">AveragePrice:</label> 
+                <InputNumber id="averageprice" @bind-Value="PortfolioTable1.AveragePrice" class="form-control" /> 
+                <ValidationMessage For="() => PortfolioTable1.AveragePrice" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="quantity" class="form-label">Quantity:</label> 
+                <InputNumber id="quantity" @bind-Value="PortfolioTable1.Quantity" class="form-control" /> 
+                <ValidationMessage For="() => PortfolioTable1.Quantity" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="newquantity" class="form-label">NewQuantity:</label> 
+                <InputNumber id="newquantity" @bind-Value="PortfolioTable1.NewQuantity" class="form-control" /> 
+                <ValidationMessage For="() => PortfolioTable1.NewQuantity" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="modifieddatetime" class="form-label">ModifiedDateTime:</label> 
+                <InputDate id="modifieddatetime" @bind-Value="PortfolioTable1.ModifiedDateTime" class="form-control" /> 
+                <ValidationMessage For="() => PortfolioTable1.ModifiedDateTime" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="createddate" class="form-label">CreatedDate:</label> 
+                <InputDate id="createddate" @bind-Value="PortfolioTable1.CreatedDate" class="form-control" /> 
+                <ValidationMessage For="() => PortfolioTable1.CreatedDate" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/portfoliotable1s">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private PortfolioTable1 PortfolioTable1 { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddPortfolioTable1()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.PortfolioTable1.Add(PortfolioTable1);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/portfoliotable1s");
+    }
+}

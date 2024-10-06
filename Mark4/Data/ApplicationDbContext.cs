@@ -58,5 +58,6 @@ namespace Mark4.Data
                 .HasForeignKey<WatchlistTable1>(c => c.InstrumentId)
                 .OnDelete(DeleteBehavior.NoAction);
         }
+        public DbSet<Mark3.Data.Tables.PortfolioTable1> PortfolioTable1 { get; set; } = default!;
     }
 }

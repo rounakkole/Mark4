@@ -1,0 +1,79 @@
+﻿@page "/portfoliotable1s/delete"
+@using Microsoft.EntityFrameworkCore
+@using Mark3.Data.Tables
+@inject IDbContextFactory<Mark4.Data.ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Delete</PageTitle>
+
+<h1>Delete</h1>
+
+<p>Are you sure you want to delete this?</p>
+<div>
+    <h2>PortfolioTable1</h2>
+    <hr />
+    @if (portfoliotable1 is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">UserId</dt>
+            <dd class="col-sm-10">@portfoliotable1.UserId</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">InstrumentId</dt>
+            <dd class="col-sm-10">@portfoliotable1.InstrumentId</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">AveragePrice</dt>
+            <dd class="col-sm-10">@portfoliotable1.AveragePrice</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">Quantity</dt>
+            <dd class="col-sm-10">@portfoliotable1.Quantity</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">NewQuantity</dt>
+            <dd class="col-sm-10">@portfoliotable1.NewQuantity</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">ModifiedDateTime</dt>
+            <dd class="col-sm-10">@portfoliotable1.ModifiedDateTime</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">CreatedDate</dt>
+            <dd class="col-sm-10">@portfoliotable1.CreatedDate</dd>
+        </dl>
+        <EditForm method="post" Model="portfoliotable1" OnValidSubmit="DeletePortfolioTable1" FormName="delete" Enhance>
+            <button type="submit" class="btn btn-danger" disabled="@(portfoliotable1 is null)">Delete</button> |
+            <a href="/portfoliotable1s">Back to List</a>
+        </EditForm>
+    }
+</div>
+
+@code {
+    private PortfolioTable1? portfoliotable1;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        portfoliotable1 = await context.PortfolioTable1.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (portfoliotable1 is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    private async Task DeletePortfolioTable1()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.PortfolioTable1.Remove(portfoliotable1!);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/portfoliotable1s");
+    }
+}

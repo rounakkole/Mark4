@@ -1,0 +1,58 @@
+﻿@page "/portfoliotable1s/details"
+@using Microsoft.EntityFrameworkCore
+@using Mark3.Data.Tables
+@inject IDbContextFactory<Mark4.Data.ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>PortfolioTable1</h2>
+    <hr />
+    @if (portfoliotable1 is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">UserId</dt>
+            <dd class="col-sm-10">@portfoliotable1.UserId</dd>
+            <dt class="col-sm-2">InstrumentId</dt>
+            <dd class="col-sm-10">@portfoliotable1.InstrumentId</dd>
+            <dt class="col-sm-2">AveragePrice</dt>
+            <dd class="col-sm-10">@portfoliotable1.AveragePrice</dd>
+            <dt class="col-sm-2">Quantity</dt>
+            <dd class="col-sm-10">@portfoliotable1.Quantity</dd>
+            <dt class="col-sm-2">NewQuantity</dt>
+            <dd class="col-sm-10">@portfoliotable1.NewQuantity</dd>
+            <dt class="col-sm-2">ModifiedDateTime</dt>
+            <dd class="col-sm-10">@portfoliotable1.ModifiedDateTime</dd>
+            <dt class="col-sm-2">CreatedDate</dt>
+            <dd class="col-sm-10">@portfoliotable1.CreatedDate</dd>
+        </dl>
+        <div>
+            <a href="@($"/portfoliotable1s/edit?id={portfoliotable1.Id}")">Edit</a> |
+            <a href="@($"/portfoliotable1s")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private PortfolioTable1? portfoliotable1;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        portfoliotable1 = await context.PortfolioTable1.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (portfoliotable1 is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

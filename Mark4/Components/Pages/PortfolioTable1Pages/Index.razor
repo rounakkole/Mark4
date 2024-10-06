@@ -1,0 +1,42 @@
+﻿@page "/portfoliotable1s"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Mark3.Data.Tables
+@using Mark4.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<Mark4.Data.ApplicationDbContext> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="portfoliotable1s/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.PortfolioTable1">
+    <PropertyColumn Property="portfoliotable1 => portfoliotable1.UserId" />
+    <PropertyColumn Property="portfoliotable1 => portfoliotable1.InstrumentId" />
+    <PropertyColumn Property="portfoliotable1 => portfoliotable1.AveragePrice" />
+    <PropertyColumn Property="portfoliotable1 => portfoliotable1.Quantity" />
+    <PropertyColumn Property="portfoliotable1 => portfoliotable1.NewQuantity" />
+    <PropertyColumn Property="portfoliotable1 => portfoliotable1.ModifiedDateTime" />
+    <PropertyColumn Property="portfoliotable1 => portfoliotable1.CreatedDate" />
+
+    <TemplateColumn Context="portfoliotable1">
+        <a href="@($"portfoliotable1s/edit?id={portfoliotable1.Id}")">Edit</a> |
+        <a href="@($"portfoliotable1s/details?id={portfoliotable1.Id}")">Details</a> |
+        <a href="@($"portfoliotable1s/delete?id={portfoliotable1.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private ApplicationDbContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}
