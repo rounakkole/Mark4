@@ -1,0 +1,62 @@
+﻿@page "/overview"
+@attribute [StreamRendering]
+
+<PageTitle>Overview</PageTitle>
+<h1>Overview</h1>
+<p>A market index is a hypothetical portfolio representing a segment of the financial market.</p>
+@if (indices == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Index</th>
+                <th>Exchange</th>
+                <th>Price</th>
+                <th>%Chg</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var indice in indices)
+            {
+                <tr>
+                    <td>@indice.Index</td>
+                    <td>@indice.Exchange</td>
+                    <td>@indice.Price</td>
+                    <td>@indice.PercentChange</td>
+                    <td>@indice.ModifiedDateTime.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@code {
+    private IndicesTable[]? indices;
+    protected override async Task OnInitializedAsync()
+    {
+        // Simulate asynchronous loading to demonstrate streaming rendering
+        await Task.Delay(500);
+        var startDate = DateOnly.FromDateTime(DateTime.Now);
+        var indexSummaries = new[] { "Sensex", "Nifty", "Nifty50", "Nifty100", "NiftyHEALTHCARE", "NiftyOILGAS", "NiftyIT", "NiftyAUTO", "NiftyPHARMA", "NiftyFMCG", "NiftyMETAL", "NiftyREALTY", "NiftyMEDIA", "NiftyINFRA", "NiftyFINSERVICE", "NiftyPSUBANK", "NiftyPVTBANK" };
+        var exchangeSummaries = new[] { "NSE", "BSE" };
+        indices = Enumerable.Range(1, 10).Select(index => new IndicesTable
+            {
+                Index = indexSummaries[Random.Shared.Next(indexSummaries.Length)],
+                Exchange = exchangeSummaries[Random.Shared.Next(exchangeSummaries.Length)],
+                Price = Random.Shared.Next(500, 1100),
+                ModifiedDateTime = startDate.AddDays(-2)
+            }).ToArray();
+    }
+    private class IndicesTable
+    {
+        public string? Index { get; set; }
+        public string? Exchange { get; set; }
+        public Decimal Price { get; set; }
+        public Decimal PercentChange => 1 + (Decimal)(Price / 1000);
+        public DateOnly ModifiedDateTime { get; set; }
+    }
+}
