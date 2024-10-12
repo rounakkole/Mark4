@@ -13,7 +13,9 @@ namespace Mark3.Data.Tables
         public int IntervalNum { get; set; }
         public int PeriodNum { get; set; }
         public int OffsetNum { get; set; }
-        public string UserRole { get; set; }
+        public string UserRole { get; set; } //Nullable
+        //public int Funds { get; set; }
+
         [DataType(DataType.DateTime)]
         public DateTime? ModifiedDateTime { get; set; }
         [DataType(DataType.Date)]

@@ -1,0 +1,27 @@
+﻿@page "/AdminForm"
+@using Microsoft.AspNetCore.Authorization
+@rendermode InteractiveServer
+
+@attribute [Authorize(Roles = "Admin")]
+
+<PageTitle>Admin Form</PageTitle>
+
+<h2>Admin Form</h2>
+
+<p>
+    <a href="ExchangeTable1s">Exchangetable1s</a>
+</p>
+<p>
+    <a href="InstrumentTable1s">InstrumentTable1s</a>
+</p>
+<p>
+    <a href="FeedTable1s">FeedTable1s</a>
+</p>
+<p>
+    <a href="DIXF">DIXF</a>
+</p>
+
+@code {
+    //learn.microsoft.com/en-us/aspnet/core/blazor/security/?view=aspnetcore-8.0
+    //youtu.be/alGGr2mX_7E
+}

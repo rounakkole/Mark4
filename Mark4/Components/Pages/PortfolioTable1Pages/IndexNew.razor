@@ -1,4 +1,5 @@
 ﻿@page "/portfoliotable1sNew"
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using Mark3.Data.Tables
@@ -7,16 +8,15 @@
 @inject IDbContextFactory<Mark4.Data.ApplicationDbContext> DbFactory
 @rendermode InteractiveServer
 
+@attribute [Authorize]
+
 <PageTitle>Portfolio</PageTitle>
 
-<h1>Portfolio</h1>
+<h2>Portfolio</h2>
 
 <p>
+    <a <input type="search" @bind="GridFilter" @bind:event="oninput"/> </a>
     <a href="portfoliotable1s/create">Create New</a>
-</p>
-
-<p>
-    <input type="search" @bind="GridFilter" @bind:event="oninput" />
 </p>
 
 <!-- <QuickGrid Class="table" Items="context.PortfolioTable1" Pagination="state"> -->
@@ -26,28 +26,26 @@
     <PropertyColumn Property="portfoliotable1 => portfoliotable1.AveragePrice" />
     <PropertyColumn Property="portfoliotable1 => portfoliotable1.Quantity" />
     <PropertyColumn Property="portfoliotable1 => portfoliotable1.NewQuantity" Sortable="true" />
-    <PropertyColumn Property="portfoliotable1 => portfoliotable1.ModifiedDateTime" Title="Date Modified" Format="dd/MM/yyyy" />
-    <PropertyColumn Property="portfoliotable1 => portfoliotable1.CreatedDate" />
+    <!-- <PropertyColumn Property="portfoliotable1 => portfoliotable1.ModifiedDateTime" Title="Date Modified" Format="dd/MM/yyyy" /> -->
+    <!-- <PropertyColumn Property="portfoliotable1 => portfoliotable1.CreatedDate" /> -->
 
     <TemplateColumn Context="portfoliotable1">
         <a href="@($"portfoliotable1s/edit?id={portfoliotable1.Id}")">Edit</a> |
-        <a href="@($"portfoliotable1s/details?id={portfoliotable1.Id}")">Details</a> |
+        <!-- <a href="@($"portfoliotable1s/details?id={portfoliotable1.Id}")">Details</a> | -->
         <a href="@($"portfoliotable1s/delete?id={portfoliotable1.Id}")">Delete</a>
     </TemplateColumn>
 </QuickGrid>
-
+<Paginator State="state" />
 @code {
-    PaginationState state = new PaginationState { ItemsPerPage = 10 };
+    PaginationState state = new PaginationState { ItemsPerPage = 32 };
     //learn.microsoft.com/en-us/aspnet/core/blazor/components/quickgrid?view=aspnetcore-8.0&tabs=visual-studio
     private string GridFilter = string.Empty;
-
     private ApplicationDbContext context = default!;
 
     protected override void OnInitialized()
     {
         context = DbFactory.CreateDbContext();
     }
-    //private IQueryable<PortfolioTable1> FilteredGrid => context.PortfolioTable1.Where(m => m.UserId!.Contains(GridFilter));
     private IQueryable<PortfolioTable1> FilteredGrid => context.PortfolioTable1.Where(m => m.InstrumentTable1.InSymbolDescription!.Contains(GridFilter));
 
     public async ValueTask DisposeAsync() => await context.DisposeAsync();
