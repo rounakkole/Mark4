@@ -7,6 +7,8 @@ namespace Mark3.Data.Tables
         public int Id { get; set; }
         public int ExchangeId { get; set; } // Required foreign key property
         public int? WatchlistId { get; set; } // Required foreign key property
+
+        //[MaxLength(20)]
         public string InSymbolName { get; set; }
         public string InSymbolDescription { get; set; }
         public string? InSector { get; set; }
