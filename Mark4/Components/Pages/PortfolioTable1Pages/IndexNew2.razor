@@ -1,0 +1,47 @@
+﻿@page "/portfoliotable1sNew2"
+@using Mark3.Data.Tables
+@using Microsoft.AspNetCore.Components.QuickGrid
+@inject IPortfolioService PortfolioService
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
+
+@attribute [StreamRendering(true)]
+
+<h3>IndexNew2</h3>
+
+<AuthorizeView>
+ <!-- @context.User.Identity?.Name -->
+@if (PortfolioTable1s == null)
+{
+    <span>Loading...</span>
+}
+else if (PortfolioTable1s.Count == 0)
+{
+    <span>No records found.</span>
+}
+else
+{
+    <ul>
+    @foreach (var PortfolioTable1 in PortfolioTable1s)
+    {
+            <li>@PortfolioTable1.UserId</li>
+            <li>@PortfolioTable1.InstrumentId</li>
+            <li>@PortfolioTable1.AveragePrice</li>
+            <li>@PortfolioTable1.Quantity</li>
+            <li>@PortfolioTable1.NewQuantity</li>
+    }
+    </ul>
+}
+</AuthorizeView>
+
+@code {
+    public List<PortfolioTable1>? PortfolioTable1s = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        string? userName = authstate.User.Identity.Name;
+
+        await Task.Delay(1000); //ToDo: remove
+        PortfolioTable1s = await PortfolioService.GetPortfolioTable1sAsync(userName);
+    }
+}
