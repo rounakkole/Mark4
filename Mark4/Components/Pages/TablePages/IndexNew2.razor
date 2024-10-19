@@ -1,10 +1,12 @@
 ﻿@page "/portfoliotable1sNew2"
 @using Mark3.Data.Tables
-@using Microsoft.AspNetCore.Components.QuickGrid
+@* @using Microsoft.AspNetCore.Components.QuickGrid *@
 @inject IPortfolioService PortfolioService
+@inject ILoginUserService LoginUserService
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
-
+@* @inject NavigationManager NavigationManager *@
 @attribute [StreamRendering(true)]
+@* @rendermode @(new InteractiveServerRenderMode(prerender: false)) *@
 
 <h3>IndexNew2</h3>
 
@@ -28,20 +30,24 @@ else
             <li>@PortfolioTable1.AveragePrice</li>
             <li>@PortfolioTable1.Quantity</li>
             <li>@PortfolioTable1.NewQuantity</li>
+            <a href="@($"portfoliotable1s/edit?id={@PortfolioTable1.Id}")">Edit</a>
     }
     </ul>
+        <!-- <p> <a href="portfoliotable1s/create">Create New</a> </p> -->
+        <Portfoliotable1sCreateButton/>
 }
 </AuthorizeView>
 
 @code {
+    //youtu.be/w8imy7LT9zY
     public List<PortfolioTable1>? PortfolioTable1s = null;
 
     protected override async Task OnInitializedAsync()
     {
-        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
-        string? userName = authstate.User.Identity.Name;
-
-        await Task.Delay(1000); //ToDo: remove
+        AuthenticationState authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        //string? userName = authstate.User.Identity.Name;
+        string? userName = LoginUserService.GetLoginUserAsync(authstate);
+        await Task.Delay(2000); //ToDo: remove
         PortfolioTable1s = await PortfolioService.GetPortfolioTable1sAsync(userName);
     }
 }

@@ -1,0 +1,67 @@
+﻿@page "/portfoliotable1s/createNew2"
+@page "/portfoliotable1s/editNew2/{id:int}"
+@inject IPortfolioService PortfolioService
+
+<PageTitle>Create</PageTitle>
+
+<h3>CreateNew2</h3>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm Model="portfolioTable1" OnValidSubmit="AddPortfolioTable1" FormName="createNew2" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" />
+            <div class="mb-3">
+                <label for="userid" class="form-label">UserId:</label>
+                <InputText id="userid" @bind-Value="portfolioTable1.UserId" class="form-control" />
+                <ValidationMessage For="() => portfolioTable1.UserId" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="instrumentid" class="form-label">InstrumentId:</label>
+                <InputNumber id="instrumentid" @bind-Value="portfolioTable1.InstrumentId" class="form-control" />
+                <ValidationMessage For="() => portfolioTable1.InstrumentId" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="averageprice" class="form-label">AveragePrice:</label>
+                <InputNumber id="averageprice" @bind-Value="portfolioTable1.AveragePrice" class="form-control" />
+                <ValidationMessage For="() => portfolioTable1.AveragePrice" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="quantity" class="form-label">Quantity:</label>
+                <InputNumber id="quantity" @bind-Value="portfolioTable1.Quantity" class="form-control" />
+                <ValidationMessage For="() => portfolioTable1.Quantity" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="newquantity" class="form-label">NewQuantity:</label>
+                <InputNumber id="newquantity" @bind-Value="portfolioTable1.NewQuantity" class="form-control" />
+                <ValidationMessage For="() => portfolioTable1.NewQuantity" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="modifieddatetime" class="form-label">ModifiedDateTime:</label>
+                <InputDate id="modifieddatetime" @bind-Value="portfolioTable1.ModifiedDateTime" class="form-control" />
+                <ValidationMessage For="() => portfolioTable1.ModifiedDateTime" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="createddate" class="form-label">CreatedDate:</label>
+                <InputDate id="createddate" @bind-Value="portfolioTable1.CreatedDate" class="form-control" />
+                <ValidationMessage For="() => portfolioTable1.CreatedDate" class="text-danger" />
+            </div>
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+
+
+@code {
+    [Parameter]
+    public int? id { get; set; }
+    [SupplyParameterFromForm]
+    private PortfolioTable1 portfolioTable1 { get; set; } = new();
+
+    async Task AddPortfolioTable1()
+    {
+        await PortfolioService.CreatePortfolioTable1sAsync(portfolioTable1);
+    }
+}
