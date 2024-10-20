@@ -11,31 +11,48 @@
 <h3>IndexNew2</h3>
 
 <AuthorizeView>
- <!-- @context.User.Identity?.Name -->
-@if (PortfolioTable1s == null)
-{
-    <span>Loading...</span>
-}
-else if (PortfolioTable1s.Count == 0)
-{
-    <span>No records found.</span>
-}
-else
-{
-    <ul>
-    @foreach (var PortfolioTable1 in PortfolioTable1s)
+    <!-- @context.User.Identity?.Name -->
+    @if (PortfolioTable1s == null)
     {
-            <li>@PortfolioTable1.UserId</li>
-            <li>@PortfolioTable1.InstrumentId</li>
-            <li>@PortfolioTable1.AveragePrice</li>
-            <li>@PortfolioTable1.Quantity</li>
-            <li>@PortfolioTable1.NewQuantity</li>
-            <a href="@($"portfoliotable1s/edit?id={@PortfolioTable1.Id}")">Edit</a>
+        <span>Loading...</span>
     }
-    </ul>
+    else if (PortfolioTable1s.Count == 0)
+    {
+        <span>No records found.</span>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>UserName</th>
+                    <th>InSymbolName</th>
+                    <th>AveragePrice</th>
+                    <th>Quantity</th>
+                    <th>NewQuantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var PortfolioTable1 in PortfolioTable1s)
+                {
+                    <tr>
+                        <td>@PortfolioTable1.ApplicationUser.UserName</td>
+                        <td>@PortfolioTable1.InstrumentTable1.InSymbolName</td>
+                        <td>@PortfolioTable1.AveragePrice</td>
+                        <td>@PortfolioTable1.Quantity</td>
+                        <td>@PortfolioTable1.NewQuantity</td>
+                        <td>
+                            <a href="@($"portfoliotable1s/edit?id={@PortfolioTable1.Id}")" class="btn btn-success">Edit</a>
+                            <a href="@($"portfoliotable1s/delete?id={@PortfolioTable1.Id}")" class="btn btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
         <!-- <p> <a href="portfoliotable1s/create">Create New</a> </p> -->
-        <Portfoliotable1sCreateButton/>
-}
+        <Portfoliotable1sCreateButton />
+    }
 </AuthorizeView>
 
 @code {
@@ -46,8 +63,9 @@ else
     {
         AuthenticationState authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
         //string? userName = authstate.User.Identity.Name;
+        //if (SignInManager.IsSignedIn(authstate.User))
         string? userName = LoginUserService.GetLoginUserAsync(authstate);
-        await Task.Delay(2000); //ToDo: remove
+        //await Task.Delay(2000); //ToDo: remove
         PortfolioTable1s = await PortfolioService.GetPortfolioTable1sAsync(userName);
     }
 }

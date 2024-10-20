@@ -1,9 +1,9 @@
 ﻿@inject NavigationManager NavigationManager
 @rendermode InteractiveServer
 
-<button @onclick="editNew2" class="btn btn-primary"> Create</button>
+<button @onclick="createNew2" class="btn btn-primary">Create</button>
 @code {
-    void editNew2()
+    void createNew2()
     {
         NavigationManager.NavigateTo("/portfoliotable1s/createNew2");
     }

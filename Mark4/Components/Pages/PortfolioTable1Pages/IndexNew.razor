@@ -6,6 +6,7 @@
 @using Mark4.Data
 @implements IAsyncDisposable
 @inject IDbContextFactory<Mark4.Data.ApplicationDbContext> DbFactory
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
 @rendermode InteractiveServer
 
 @attribute [Authorize]
@@ -21,11 +22,13 @@
 
 <!-- <QuickGrid Class="table" Items="context.PortfolioTable1" Pagination="state"> -->
 <QuickGrid Class="table" Items="FilteredGrid" Pagination="state">
-    <PropertyColumn Property="portfoliotable1 => portfoliotable1.UserId" Title="User" />
-    <PropertyColumn Property="portfoliotable1 => portfoliotable1.InstrumentId" Title="Instrument" InitialSortDirection="SortDirection.Ascending" IsDefaultSortColumn="true" Sortable="true" />
+    <!-- <PropertyColumn Property="portfoliotable1 => portfoliotable1.UserId" Title="User" /> -->
+    <PropertyColumn Property="portfoliotable1 => portfoliotable1.ApplicationUser.UserName" Title="User" />
+    <!-- <PropertyColumn Property="portfoliotable1 => portfoliotable1.InstrumentId" Title="Instrument" InitialSortDirection="SortDirection.Ascending" IsDefaultSortColumn="true" Sortable="true" /> -->
+    <PropertyColumn Property="portfoliotable1 => portfoliotable1.InstrumentTable1.InSymbolName" Title="Instrument" Sortable="true" />
     <PropertyColumn Property="portfoliotable1 => portfoliotable1.AveragePrice" />
     <PropertyColumn Property="portfoliotable1 => portfoliotable1.Quantity" />
-    <PropertyColumn Property="portfoliotable1 => portfoliotable1.NewQuantity" Sortable="true" />
+    <PropertyColumn Property="portfoliotable1 => portfoliotable1.NewQuantity" InitialSortDirection="SortDirection.Ascending" IsDefaultSortColumn="true" Sortable="true" />
     <!-- <PropertyColumn Property="portfoliotable1 => portfoliotable1.ModifiedDateTime" Title="Date Modified" Format="dd/MM/yyyy" /> -->
     <!-- <PropertyColumn Property="portfoliotable1 => portfoliotable1.CreatedDate" /> -->
 
@@ -41,13 +44,23 @@
     PaginationState state = new PaginationState { ItemsPerPage = 32 };
     //learn.microsoft.com/en-us/aspnet/core/blazor/components/quickgrid?view=aspnetcore-8.0&tabs=visual-studio
     private string GridFilter = string.Empty;
+    private string? userName = string.Empty;
     private ApplicationDbContext context = default!;
 
-    protected override void OnInitialized()
+    protected override async void OnInitialized()
     {
         context = DbFactory.CreateDbContext();
+
+        //youtu.be/w8imy7LT9zY
+        AuthenticationState authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        //if (SignInManager.IsSignedIn(authstate.User))
+        //string? userName = LoginUserService.GetLoginUserAsync(authstate);
+        userName = authstate.User.Identity.Name;
     }
-    private IQueryable<PortfolioTable1> FilteredGrid => context.PortfolioTable1.Where(m => m.InstrumentTable1.InSymbolDescription!.Contains(GridFilter));
+    private IQueryable<PortfolioTable1> FilteredGrid => context.PortfolioTable1.Where(m => m.ApplicationUser.Email.Equals(userName) 
+                && m.InstrumentTable1.InSymbolDescription!.Contains(GridFilter))
+                .Include(m => m.InstrumentTable1)
+                .Include(m => m.ApplicationUser);
 
     public async ValueTask DisposeAsync() => await context.DisposeAsync();
 }
