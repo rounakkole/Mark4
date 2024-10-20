@@ -22,11 +22,13 @@ else
                 <DataAnnotationsValidator />
                 <ValidationSummary />
                 <input type="hidden" name="PortfolioTable1.Id" value="@PortfolioTable1.Id" />
-                <div class="mb-3">
+                <input type="hidden" name="PortfolioTable1.UserId" value="@PortfolioTable1.UserId" />
+                <input type="hidden" name="PortfolioTable1.CreatedDate" value="@PortfolioTable1.CreatedDate.ToLongDateString()" />
+                <!-- <div class="mb-3">
                     <label for="userid" class="form-label">UserId:</label>
                     <InputText id="userid" @bind-Value="PortfolioTable1.UserId" class="form-control" />
                     <ValidationMessage For="() => PortfolioTable1.UserId" class="text-danger" />
-                </div>
+                </div> -->
                 <div class="mb-3">
                     <label for="instrumentid" class="form-label">InstrumentId:</label>
                     <InputNumber id="instrumentid" @bind-Value="PortfolioTable1.InstrumentId" class="form-control" />
@@ -47,18 +49,26 @@ else
                     <InputNumber id="newquantity" @bind-Value="PortfolioTable1.NewQuantity" class="form-control" />
                     <ValidationMessage For="() => PortfolioTable1.NewQuantity" class="text-danger" />
                 </div>
-                <div class="mb-3">
-                    <label for="modifieddatetime" class="form-label">ModifiedDateTime:</label>
+                <!-- <div class="mb-3">
+                    <label for="mojdifieddatetime" class="form-label">ModifiedDateTime:</label>
                     <InputDate id="modifieddatetime" @bind-Value="PortfolioTable1.ModifiedDateTime" class="form-control" />
                     <ValidationMessage For="() => PortfolioTable1.ModifiedDateTime" class="text-danger" />
-                </div>
-                <div class="mb-3">
+                </div> -->
+                <!-- <div class="mb-3">
                     <label for="createddate" class="form-label">CreatedDate:</label>
                     <InputDate id="createddate" @bind-Value="PortfolioTable1.CreatedDate" class="form-control" />
                     <ValidationMessage For="() => PortfolioTable1.CreatedDate" class="text-danger" />
-                </div>
+                </div> -->
                 <button type="submit" class="btn btn-primary">Save</button>
             </EditForm>
+        </div>
+        <div>
+            <dl class="row">
+                <dt class="col-sm-2">ModifiedDateTime</dt>
+                <dd class="col-sm-10">@PortfolioTable1.ModifiedDateTime</dd>
+                <dt class="col-sm-2">CreatedDate</dt>
+                <dd class="col-sm-10">@PortfolioTable1.CreatedDate</dd>
+            </dl>
         </div>
     </div>
 }
@@ -78,7 +88,6 @@ else
     {
         using var context = DbFactory.CreateDbContext();
         PortfolioTable1 ??= await context.PortfolioTable1.FirstOrDefaultAsync(m => m.Id == Id);
-
         if (PortfolioTable1 is null)
         {
             NavigationManager.NavigateTo("notfound");
@@ -94,6 +103,7 @@ else
 
         try
         {
+            PortfolioTable1.ModifiedDateTime = DateTime.Now;
             await context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)

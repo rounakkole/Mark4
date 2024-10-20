@@ -6,6 +6,7 @@ namespace Mark4.Services
 {
     public interface ILoginUserService
     {
-        public string GetLoginUserAsync(AuthenticationState _authstate);
+        public string GetLoginUserNameAsync(AuthenticationState _authstate);
+        public string GetLoginUserIdAsync(IHttpContextAccessor httpContextAccessor);
     }
 }

@@ -1,8 +1,12 @@
 ﻿@page "/portfoliotable1s/create"
+@using Microsoft.AspNetCore.Identity
 @using Microsoft.EntityFrameworkCore
 @using Mark3.Data.Tables
+@using Mark4.Data
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
 @inject IDbContextFactory<Mark4.Data.ApplicationDbContext> DbFactory
 @inject NavigationManager NavigationManager
+
 
 <PageTitle>Create</PageTitle>
 
@@ -16,40 +20,53 @@
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" />
             <div class="mb-3">
-                <label for="userid" class="form-label">UserId:</label> 
-                <InputText id="userid" @bind-Value="PortfolioTable1.UserId" class="form-control" /> 
-                <ValidationMessage For="() => PortfolioTable1.UserId" class="text-danger" /> 
-            </div>        
+                <label for="userid" class="form-label">UserId:</label>
+                <InputText id="userid" @bind-Value="PortfolioTable1.UserId" class="form-control" />
+                <ValidationMessage For="() => PortfolioTable1.UserId" class="text-danger" />
+            </div>
+            <!-- <div class="mb-3">
+                <label for="instrumentid" class="form-label">InstrumentId:</label>
+                <InputNumber id="instrumentid" @bind-Value="PortfolioTable1.InstrumentId" class="form-control" />
+                <ValidationMessage For="() => PortfolioTable1.InstrumentId" class="text-danger" />
+            </div> -->
+
+            <!-- youtube.com/shorts/lvkm-2NtdFY -->
             <div class="mb-3">
-                <label for="instrumentid" class="form-label">InstrumentId:</label> 
-                <InputNumber id="instrumentid" @bind-Value="PortfolioTable1.InstrumentId" class="form-control" /> 
-                <ValidationMessage For="() => PortfolioTable1.InstrumentId" class="text-danger" /> 
-            </div>        
+                <label for="" class="form-label">Instrumentid</label>
+                <InputSelect id="Instrumentid" @bind-Value="PortfolioTable1.InstrumentId">
+                    <OptionValue value=""> Select Instrumentid</OptionValue>
+                    @foreach (var instrumentTable1 in InstrumentTable1s)
+                    {
+                        <option value="@instrumentTable1.Id">@instrumentTable1.InSymbolDescription</option>
+                    }
+                </InputSelect>
+            </div>
+
             <div class="mb-3">
-                <label for="averageprice" class="form-label">AveragePrice:</label> 
-                <InputNumber id="averageprice" @bind-Value="PortfolioTable1.AveragePrice" class="form-control" /> 
-                <ValidationMessage For="() => PortfolioTable1.AveragePrice" class="text-danger" /> 
-            </div>        
+                <label for="averageprice" class="form-label">AveragePrice:</label>
+                <InputNumber id="averageprice" @bind-Value="PortfolioTable1.AveragePrice" class="form-control" />
+                <ValidationMessage For="() => PortfolioTable1.AveragePrice" class="text-danger" />
+            </div>
             <div class="mb-3">
-                <label for="quantity" class="form-label">Quantity:</label> 
-                <InputNumber id="quantity" @bind-Value="PortfolioTable1.Quantity" class="form-control" /> 
-                <ValidationMessage For="() => PortfolioTable1.Quantity" class="text-danger" /> 
-            </div>        
+                <label for="quantity" class="form-label">Quantity:</label>
+                <InputNumber id="quantity" @bind-Value="PortfolioTable1.Quantity" class="form-control" />
+                <ValidationMessage For="() => PortfolioTable1.Quantity" class="text-danger" />
+            </div>
             <div class="mb-3">
-                <label for="newquantity" class="form-label">NewQuantity:</label> 
-                <InputNumber id="newquantity" @bind-Value="PortfolioTable1.NewQuantity" class="form-control" /> 
-                <ValidationMessage For="() => PortfolioTable1.NewQuantity" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="modifieddatetime" class="form-label">ModifiedDateTime:</label> 
-                <InputDate id="modifieddatetime" @bind-Value="PortfolioTable1.ModifiedDateTime" class="form-control" /> 
-                <ValidationMessage For="() => PortfolioTable1.ModifiedDateTime" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="createddate" class="form-label">CreatedDate:</label> 
-                <InputDate id="createddate" @bind-Value="PortfolioTable1.CreatedDate" class="form-control" /> 
-                <ValidationMessage For="() => PortfolioTable1.CreatedDate" class="text-danger" /> 
-            </div>        
+                <label for="newquantity" class="form-label">NewQuantity:</label>
+                <InputNumber id="newquantity" @bind-Value="PortfolioTable1.NewQuantity" class="form-control" />
+                <ValidationMessage For="() => PortfolioTable1.NewQuantity" class="text-danger" />
+            </div>
+            <!-- <div class="mb-3">
+                <label for="modifieddatetime" class="form-label">ModifiedDateTime:</label>
+                <InputDate id="modifieddatetime" @bind-Value="PortfolioTable1.ModifiedDateTime" class="form-control" />
+                <ValidationMessage For="() => PortfolioTable1.ModifiedDateTime" class="text-danger" />
+            </div>         -->
+            <!-- <div class="mb-3">
+                <label for="createddate" class="form-label">CreatedDate:</label>
+                <InputDate id="createddate" @bind-Value="PortfolioTable1.CreatedDate" class="form-control" />
+                <ValidationMessage For="() => PortfolioTable1.CreatedDate" class="text-danger" />
+            </div>         -->
             <button type="submit" class="btn btn-primary">Create</button>
         </EditForm>
     </div>
@@ -62,13 +79,27 @@
 @code {
     [SupplyParameterFromForm]
     private PortfolioTable1 PortfolioTable1 { get; set; } = new();
+    private List<InstrumentTable1> InstrumentTable1s = new List<InstrumentTable1>();
+    public string? userId = string.Empty;
 
     // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task AddPortfolioTable1()
     {
         using var context = DbFactory.CreateDbContext();
+        PortfolioTable1.UserId = userId;
+        PortfolioTable1.ModifiedDateTime = DateTime.Now;
+        PortfolioTable1.CreatedDate = DateOnly.FromDateTime(DateTime.Now);
         context.PortfolioTable1.Add(PortfolioTable1);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/portfoliotable1s");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        AuthenticationState authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+
+        InstrumentTable1s = await context.InstrumentTable1.ToListAsync();
+        userId = authstate.User.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
     }
 }

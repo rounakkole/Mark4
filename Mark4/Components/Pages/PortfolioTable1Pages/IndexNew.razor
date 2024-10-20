@@ -54,7 +54,7 @@
         //youtu.be/w8imy7LT9zY
         AuthenticationState authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
         //if (SignInManager.IsSignedIn(authstate.User))
-        //string? userName = LoginUserService.GetLoginUserAsync(authstate);
+        //string? userName = LoginUserService.GetLoginUserNameAsync(authstate);
         userName = authstate.User.Identity.Name;
     }
     private IQueryable<PortfolioTable1> FilteredGrid => context.PortfolioTable1.Where(m => m.ApplicationUser.Email.Equals(userName) 

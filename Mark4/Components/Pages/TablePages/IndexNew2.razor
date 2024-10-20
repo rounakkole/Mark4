@@ -64,7 +64,7 @@
         AuthenticationState authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
         //string? userName = authstate.User.Identity.Name;
         //if (SignInManager.IsSignedIn(authstate.User))
-        string? userName = LoginUserService.GetLoginUserAsync(authstate);
+        string? userName = LoginUserService.GetLoginUserNameAsync(authstate);
         //await Task.Delay(2000); //ToDo: remove
         PortfolioTable1s = await PortfolioService.GetPortfolioTable1sAsync(userName);
     }

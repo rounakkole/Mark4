@@ -59,5 +59,6 @@ namespace Mark4.Data
                 .OnDelete(DeleteBehavior.NoAction);
         }
         public DbSet<Mark3.Data.Tables.PortfolioTable1> PortfolioTable1 { get; set; } = default!;
+        public DbSet<Mark3.Data.Tables.InstrumentTable1> InstrumentTable1 { get; set; } = default!;
     }
 }
