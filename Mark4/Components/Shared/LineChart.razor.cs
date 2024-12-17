@@ -114,7 +114,8 @@ namespace Mark4.Components.Shared
 
             var datasets = chartData.Datasets.OfType<LineChartDataset>();
             var data = new { chartData.Labels, Datasets = datasets };
-            await JSRuntime.InvokeVoidAsync("window.blazorChart.line.initialize", Id, GetChartType(), data, (LineChartOptions)chartOptions, plugins);
+            //await JSRuntime.InvokeVoidAsync("window.blazorChart.line.initialize", Id, GetChartType(), data, (LineChartOptions)chartOptions, plugins); 
+            await JSRuntime.InvokeVoidAsync("window.lineChart.line.initialize", Id, GetChartType(), data, (LineChartOptions)chartOptions, plugins); //ToDo: remove
         }
 
         public override async Task UpdateAsync(ChartData chartData, IChartOptions chartOptions)
