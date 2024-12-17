@@ -50,10 +50,10 @@ namespace Mark4.Components.Shared
             {
                 var _data = GetChartDataObject(chartData);
 
-                if (chartType == ChartType.Bar)
-                    await JSRuntime.InvokeVoidAsync("window.blazorChart.bar.initialize", Id, GetChartType(), _data, (BarChartOptions)chartOptions, plugins);
-                else if (chartType == ChartType.Line)
+                if (chartType == ChartType.Line)
                     await JSRuntime.InvokeVoidAsync("window.blazorChart.line.initialize", Id, GetChartType(), _data, (LineChartOptions)chartOptions, plugins);
+                //else if(chartType == ChartType.Bar)
+                    //await JSRuntime.InvokeVoidAsync("window.blazorChart.bar.initialize", Id, GetChartType(), _data, (BarChartOptions)chartOptions, plugins);
                 else
                     await JSRuntime.InvokeVoidAsync("window.blazorChart.initialize", Id, GetChartType(), _data, chartOptions, plugins);
             }
@@ -72,10 +72,10 @@ namespace Mark4.Components.Shared
         /// <param name="heightUnit"></param>
         public async Task ResizeAsync(int width, int height, Unit widthUnit = Unit.Px, Unit heightUnit = Unit.Px)
         {
-            //var widthWithUnit = $"width:{width.ToString(CultureInfo.InvariantCulture)}{widthUnit.ToCssString()}";
-            var widthWithUnit = $"width:{width.ToString(CultureInfo.InvariantCulture)}{widthUnit.ToString()}"; //ToDo: remove
-            //var heightWithUnit = $"height:{height.ToString(CultureInfo.InvariantCulture)}{heightUnit.ToCssString()}";
-            var heightWithUnit = $"height:{height.ToString(CultureInfo.InvariantCulture)}{heightUnit.ToString()}"; //ToDo: remove
+            var widthWithUnit = $"width:{width.ToString(CultureInfo.InvariantCulture)}{widthUnit.ToCssString()}";
+            //var widthWithUnit = $"width:{width.ToString(CultureInfo.InvariantCulture)}{widthUnit.ToString()}"; //ToDo: remove
+            var heightWithUnit = $"height:{height.ToString(CultureInfo.InvariantCulture)}{heightUnit.ToCssString()}";
+            //var heightWithUnit = $"height:{height.ToString(CultureInfo.InvariantCulture)}{heightUnit.ToString()}"; //ToDo: remove
             await JSRuntime.InvokeVoidAsync("window.blazorChart.resize", Id, widthWithUnit, heightWithUnit);
         }
 
@@ -91,10 +91,10 @@ namespace Mark4.Components.Shared
             {
                 var data = GetChartDataObject(chartData);
 
-                if (chartType == ChartType.Bar)
-                    await JSRuntime.InvokeVoidAsync("window.blazorChart.bar.update", Id, GetChartType(), data, (BarChartOptions)chartOptions);
-                else if (chartType == ChartType.Line)
+                if (chartType == ChartType.Line)
                     await JSRuntime.InvokeVoidAsync("window.blazorChart.line.update", Id, GetChartType(), data, (LineChartOptions)chartOptions);
+                //else if(chartType == ChartType.Bar)
+                    //await JSRuntime.InvokeVoidAsync("window.blazorChart.bar.update", Id, GetChartType(), data, (BarChartOptions)chartOptions);
                 else
                     await JSRuntime.InvokeVoidAsync("window.blazorChart.update", Id, GetChartType(), data, chartOptions);
             }
@@ -111,10 +111,10 @@ namespace Mark4.Components.Shared
             {
                 var data = GetChartDataObject(chartData);
 
-                if (chartType == ChartType.Bar)
-                    await JSRuntime.InvokeVoidAsync("window.blazorChart.bar.updateDataValues", Id, data);
-                else if (chartType == ChartType.Line)
+                if (chartType == ChartType.Line)
                     await JSRuntime.InvokeVoidAsync("window.blazorChart.line.updateDataValues", Id, data);
+                //else if(chartType == ChartType.Bar)
+                    //await JSRuntime.InvokeVoidAsync("window.blazorChart.bar.updateDataValues", Id, data);
                 else
                     await JSRuntime.InvokeVoidAsync("window.blazorChart.updateDataValues", Id, data);
             }
@@ -123,14 +123,16 @@ namespace Mark4.Components.Shared
         protected string GetChartType() =>
             chartType switch
             {
+                ChartType.Line => "line",
+                /*
                 ChartType.Bar => "bar",
                 ChartType.Bubble => "bubble",
                 ChartType.Doughnut => "doughnut",
-                ChartType.Line => "line",
                 ChartType.Pie => "pie",
                 ChartType.PolarArea => "polarArea",
                 ChartType.Radar => "radar",
                 ChartType.Scatter => "scatter",
+                */
                 _ => "line" // default
             };
 
@@ -139,12 +141,12 @@ namespace Mark4.Components.Shared
             var style = "";
 
             if (Width > 0)
-                //style += $"width:{Width.Value.ToString(CultureInfo.InvariantCulture)}{WidthUnit.ToCssString()};";
-                style += $"width:{Width.Value.ToString(CultureInfo.InvariantCulture)}{WidthUnit.ToString()};"; //ToDo: remove
+                style += $"width:{Width.Value.ToString(CultureInfo.InvariantCulture)}{WidthUnit.ToCssString()};";
+                //style += $"width:{Width.Value.ToString(CultureInfo.InvariantCulture)}{WidthUnit.ToString()};"; //ToDo: remove
 
             if (Height > 0)
-                //style += $"height:{Height.Value.ToString(CultureInfo.InvariantCulture)}{HeightUnit.ToCssString()};";
-                style += $"height:{Height.Value.ToString(CultureInfo.InvariantCulture)}{HeightUnit.ToString()};"; //ToDo: remove
+                style += $"height:{Height.Value.ToString(CultureInfo.InvariantCulture)}{HeightUnit.ToCssString()};";
+                //style += $"height:{Height.Value.ToString(CultureInfo.InvariantCulture)}{HeightUnit.ToString()};"; //ToDo: remove
 
             return style;
         }
@@ -155,18 +157,20 @@ namespace Mark4.Components.Shared
 
             if (chartData?.Datasets?.Any() ?? false)
                 foreach (var dataset in chartData.Datasets)
-                    if (dataset is BarChartDataset)
+                    if (dataset is LineChartDataset)
+                        datasets.Add((LineChartDataset)dataset);
+                    /*
+                    else if (dataset is BarChartDataset)
                         datasets.Add((BarChartDataset)dataset);
-            /*
                     else if (dataset is DoughnutChartDataset)
                         datasets.Add((DoughnutChartDataset)dataset);
-                    else if (dataset is LineChartDataset)
-                        datasets.Add((LineChartDataset)dataset);
                     else if (dataset is PieChartDataset)
                         datasets.Add((PieChartDataset)dataset);
                     else if (dataset is PolarAreaChartDataset)
                         datasets.Add((PolarAreaChartDataset)dataset);
-            */
+                    */
+                    else
+                        datasets.Add((LineChartDataset)dataset);
             var data = new { chartData?.Labels, Datasets = datasets };
 
             return data;

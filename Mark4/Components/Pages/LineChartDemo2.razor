@@ -74,8 +74,8 @@
 
     private LineChartDataset GetRandomLineChartDataset()
     {
-        //var c = ColorUtility.CategoricalTwelveColors[datasetsCount].ToColor();
-        var c = "Red";
+        var c = ColorUtility.CategoricalTwelveColors[datasetsCount].ToColor();
+        //var c = "red"; //ToDo: remove
 
         datasetsCount += 1;
 
@@ -83,10 +83,10 @@
             {
                 Label = $"Team {datasetsCount}",
                 Data = GetRandomData(),
-                //BackgroundColor = c.ToRgbString(),
-                BackgroundColor = "rgba(140,140,140)",
-                //BorderColor = c.ToRgbString(),
-                BorderColor = "rgba(140,140,140)",
+                BackgroundColor = c.ToRgbString(),
+                //BackgroundColor = "rgba(140,140,140)", //ToDo: remove
+                BorderColor = c.ToRgbString(),
+                //BorderColor = "rgba(140,140,140)", //ToDo: remove
                 BorderWidth = 2,
                 HoverBorderWidth = 4,
                 // PointBackgroundColor = c.ToRgbString(),
