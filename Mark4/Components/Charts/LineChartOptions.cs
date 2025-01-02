@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualBasic;
 using System.Text.Json.Serialization;
 
-namespace Mark4.Components.Shared
+namespace Mark4.Components.Charts
 {
     public class LineChartOptions : ChartOptions
     {

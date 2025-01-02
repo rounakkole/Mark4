@@ -1,4 +1,5 @@
-﻿using Microsoft.JSInterop;
+﻿using Mark4.Components.Charts;
+using Microsoft.JSInterop;
 
 namespace Mark4.Components.Shared
 {

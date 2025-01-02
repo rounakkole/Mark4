@@ -2,7 +2,7 @@
 using Microsoft.JSInterop;
 using System.Globalization;
 
-namespace Mark4.Components.Shared
+namespace Mark4.Components.Charts
 {
     public class BlazorBootstrapChart : BlazorBootstrapComponentBase, IDisposable, IAsyncDisposable
     {
@@ -53,7 +53,7 @@ namespace Mark4.Components.Shared
                 if (chartType == ChartType.Line)
                     await JSRuntime.InvokeVoidAsync("window.blazorChart.line.initialize", Id, GetChartType(), _data, (LineChartOptions)chartOptions, plugins);
                 //else if(chartType == ChartType.Bar)
-                    //await JSRuntime.InvokeVoidAsync("window.blazorChart.bar.initialize", Id, GetChartType(), _data, (BarChartOptions)chartOptions, plugins);
+                //await JSRuntime.InvokeVoidAsync("window.blazorChart.bar.initialize", Id, GetChartType(), _data, (BarChartOptions)chartOptions, plugins);
                 else
                     await JSRuntime.InvokeVoidAsync("window.blazorChart.initialize", Id, GetChartType(), _data, chartOptions, plugins);
             }
@@ -94,7 +94,7 @@ namespace Mark4.Components.Shared
                 if (chartType == ChartType.Line)
                     await JSRuntime.InvokeVoidAsync("window.blazorChart.line.update", Id, GetChartType(), data, (LineChartOptions)chartOptions);
                 //else if(chartType == ChartType.Bar)
-                    //await JSRuntime.InvokeVoidAsync("window.blazorChart.bar.update", Id, GetChartType(), data, (BarChartOptions)chartOptions);
+                //await JSRuntime.InvokeVoidAsync("window.blazorChart.bar.update", Id, GetChartType(), data, (BarChartOptions)chartOptions);
                 else
                     await JSRuntime.InvokeVoidAsync("window.blazorChart.update", Id, GetChartType(), data, chartOptions);
             }
@@ -114,7 +114,7 @@ namespace Mark4.Components.Shared
                 if (chartType == ChartType.Line)
                     await JSRuntime.InvokeVoidAsync("window.blazorChart.line.updateDataValues", Id, data);
                 //else if(chartType == ChartType.Bar)
-                    //await JSRuntime.InvokeVoidAsync("window.blazorChart.bar.updateDataValues", Id, data);
+                //await JSRuntime.InvokeVoidAsync("window.blazorChart.bar.updateDataValues", Id, data);
                 else
                     await JSRuntime.InvokeVoidAsync("window.blazorChart.updateDataValues", Id, data);
             }
@@ -142,11 +142,11 @@ namespace Mark4.Components.Shared
 
             if (Width > 0)
                 style += $"width:{Width.Value.ToString(CultureInfo.InvariantCulture)}{WidthUnit.ToCssString()};";
-                //style += $"width:{Width.Value.ToString(CultureInfo.InvariantCulture)}{WidthUnit.ToString()};"; //ToDo: remove
+            //style += $"width:{Width.Value.ToString(CultureInfo.InvariantCulture)}{WidthUnit.ToString()};"; //ToDo: remove
 
             if (Height > 0)
                 style += $"height:{Height.Value.ToString(CultureInfo.InvariantCulture)}{HeightUnit.ToCssString()};";
-                //style += $"height:{Height.Value.ToString(CultureInfo.InvariantCulture)}{HeightUnit.ToString()};"; //ToDo: remove
+            //style += $"height:{Height.Value.ToString(CultureInfo.InvariantCulture)}{HeightUnit.ToString()};"; //ToDo: remove
 
             return style;
         }

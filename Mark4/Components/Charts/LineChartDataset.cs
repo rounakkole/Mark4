@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Text.Json.Serialization;
 
-namespace Mark4.Components.Shared
+namespace Mark4.Components.Charts
 {
     /// <summary>
     /// The line chart allows a number of properties to be specified for each dataset.

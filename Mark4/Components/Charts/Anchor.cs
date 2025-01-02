@@ -1,4 +1,4 @@
-﻿namespace Mark4.Components.Shared
+﻿namespace Mark4.Components.Charts
 {
     public enum Anchor
     {

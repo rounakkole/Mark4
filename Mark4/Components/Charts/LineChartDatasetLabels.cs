@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Mark4.Components.Shared
+namespace Mark4.Components.Charts
 {
     /// <summary>
     /// Highly customizable Chart.js plugin that displays labels on data for any type of charts.

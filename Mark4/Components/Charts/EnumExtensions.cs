@@ -1,7 +1,7 @@
 ﻿using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.DotNet.Scaffolding.Shared.Project;
 
-namespace Mark4.Components.Shared
+namespace Mark4.Components.Charts
 {
     /// <summary>
     /// Enum extensions

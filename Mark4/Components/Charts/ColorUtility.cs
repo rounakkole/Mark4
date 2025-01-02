@@ -1,4 +1,4 @@
-﻿namespace Mark4.Components.Shared
+﻿namespace Mark4.Components.Charts
 {
     public static class ColorUtility
     {

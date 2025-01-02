@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Mark4.Components.Shared;
+using Microsoft.AspNetCore.Components;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.JSInterop;
 
-namespace Mark4.Components.Shared
+namespace Mark4.Components.Charts
 {
     public abstract class BlazorBootstrapComponentBase : ComponentBase, IDisposable, IAsyncDisposable
     {
