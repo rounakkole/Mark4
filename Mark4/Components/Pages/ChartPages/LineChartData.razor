@@ -1,0 +1,113 @@
+﻿@page "/linechartdata"
+@namespace Mark4.Components.Charts
+@rendermode InteractiveServer
+@using Mark3.Data.Tables
+@using Mark4.Data
+@using Microsoft.EntityFrameworkCore
+@* @implements IAsyncDisposable *@
+@* @inject IDbContextFactory<Mark4.Data.ApplicationDbContext> DbFactory *@
+@inject IPortfolioService PortfolioService
+
+<PageTitle>LineChartData</PageTitle>
+<h3>Line Chart</h3>
+
+<div class="container-fluid overflow-x-auto">
+    <LineChart @ref="lineChart" Width="800" />
+</div>
+
+@code {
+    private LineChart lineChart = default!;
+    private LineChartOptions lineChartOptions = default!;
+    private ChartData chartData = default!;
+
+    //private ApplicationDbContext context = default!;
+    //public async ValueTask DisposeAsync() => await context.DisposeAsync();
+    public List<PortfolioTable1>? PortfolioTable1s = null;
+    public List<double?> DataList = new List<double?>();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        //await Task.Delay(2000); //ToDo: remove
+        PortfolioTable1s = await PortfolioService.GetPortfolioTable1sAsync("rk@gmail.com");
+        foreach (var PortfolioTable1 in PortfolioTable1s)
+        {
+            DataList.Add(decimal.ToDouble(PortfolioTable1.AveragePrice));
+        }
+        
+    }
+
+    protected override void OnInitialized()
+    {
+        var colors = ColorUtility.CategoricalTwelveColors;
+
+        var labels = new List<string> { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+        var datasets = new List<IChartDataset>();
+        //context = DbFactory.CreateDbContext();
+
+        var dataset1 = new LineChartDataset
+            {
+                Label = "SMA",
+                //Data = new List<double?> { 7265791, 5899643, 6317759, 6315641, 5338211, 8496306, 7568556, 8538933, 8274297, 8657298, 7548388, 7764845 },
+                Data=DataList,
+                BackgroundColor = colors[0],
+                BorderColor = colors[0],
+                BorderWidth = 2,
+                HoverBorderWidth = 4,
+                // PointBackgroundColor = colors[0],
+                // PointRadius = 0, // hide points
+                // PointHoverRadius = 4,
+            };
+        datasets.Add(dataset1);
+
+        var dataset2 = new LineChartDataset
+            {
+                Label = "EMA",
+                Data = DataList,
+                BackgroundColor = colors[1],
+                BorderColor = colors[1],
+                BorderWidth = 2,
+                HoverBorderWidth = 4,
+                // PointBackgroundColor = colors[1],
+                // PointRadius = 0, // hide points
+                // PointHoverRadius = 4,
+            };
+        datasets.Add(dataset2);
+
+        var dataset3 = new LineChartDataset
+            {
+                Label = "Closing",
+                Data = DataList,
+                BackgroundColor = colors[2],
+                BorderColor = colors[2],
+                BorderWidth = 2,
+                HoverBorderWidth = 4,
+                // PointBackgroundColor = colors[2],
+                // PointRadius = 0, // hide points
+                // PointHoverRadius = 4,
+            };
+        datasets.Add(dataset3);
+
+        chartData = new ChartData { Labels = labels, Datasets = datasets };
+
+        lineChartOptions = new();
+        lineChartOptions.Responsive = true;
+        lineChartOptions.Interaction = new Interaction { Mode = InteractionMode.Index };
+
+        lineChartOptions.Scales.X!.Title = new ChartAxesTitle { Text = "2025", Display = true };
+        lineChartOptions.Scales.Y!.Title = new ChartAxesTitle { Text = "Price", Display = true };
+
+        lineChartOptions.Plugins.Title!.Text = "Portfolio Chart";
+        lineChartOptions.Plugins.Title.Display = true;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await lineChart.InitializeAsync(chartData, lineChartOptions);
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+}
