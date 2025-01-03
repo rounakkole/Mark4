@@ -60,5 +60,6 @@ namespace Mark4.Data
         }
         public DbSet<Mark3.Data.Tables.PortfolioTable1> PortfolioTable1 { get; set; } = default!;
         public DbSet<Mark3.Data.Tables.InstrumentTable1> InstrumentTable1 { get; set; } = default!;
+        public DbSet<Mark3.Data.Tables.FeedTable1> FeedTable1 { get; set; } = default!;
     }
 }
