@@ -4,9 +4,7 @@
 @using Mark3.Data.Tables
 @using Mark4.Data
 @using Microsoft.EntityFrameworkCore
-@* @implements IAsyncDisposable *@
-@* @inject IDbContextFactory<Mark4.Data.ApplicationDbContext> DbFactory *@
-@inject IPortfolioService PortfolioService
+@inject IFeedService FeedService
 
 <PageTitle>LineChartData</PageTitle>
 <h3>Line Chart</h3>
@@ -20,41 +18,79 @@
     private LineChartOptions lineChartOptions = default!;
     private ChartData chartData = default!;
 
-    //private ApplicationDbContext context = default!;
-    //public async ValueTask DisposeAsync() => await context.DisposeAsync();
-    public List<PortfolioTable1>? PortfolioTable1s = null;
-    public List<double?> DataList = new List<double?>();
+    private List<FeedTable1>? FeedTable1s = null;
+    private List<string?> DataListMonth = new List<string?>();
+
+    private List<double?> DataListClosing = new List<double?>();
+    private List<double?> DataListSMA = new List<double?>();
+    private List<double?> DataListEMA = new List<double?>();
+
+    private string inSymbolDescription = "Feed Chart";
 
     protected override async Task OnInitializedAsync()
     {
+        int _instrumentId = 5; //ToDo: get dynamic value
+        int _intervalNum = 60;
+        int takeLast = 12 + 5;
+        int forEach = 1;
 
-        //await Task.Delay(2000); //ToDo: remove
-        PortfolioTable1s = await PortfolioService.GetPortfolioTable1sAsync("rk@gmail.com");
-        foreach (var PortfolioTable1 in PortfolioTable1s)
+        FeedTable1s = await FeedService.GetFeedTable1sAsync(_instrumentId, _intervalNum, takeLast);
+
+        List<double?> PreValues = new List<double?>() { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        int SMAperiod = takeLast - 12;
+        double? closePrice, sumPrice = 0;
+
+        foreach (var FeedTable1 in FeedTable1s)
         {
-            DataList.Add(decimal.ToDouble(PortfolioTable1.AveragePrice));
+            closePrice = decimal.ToDouble(FeedTable1.ClosePrice);
+            sumPrice = closePrice;
+
+            //1=Jun, 2=May, 3=Apr
+            foreach (int i in Enumerable.Range(0, SMAperiod))
+            {
+                PreValues.Insert((SMAperiod - i), PreValues[SMAperiod - i - 1]);
+                PreValues.Insert(1, closePrice);
+                sumPrice = sumPrice + PreValues[(SMAperiod - i)];
+            }
+
+            if (SMAperiod < forEach)
+            {
+                DataListMonth.Add(FeedTable1.FeedDateTime.ToString("MMM"));
+
+                DataListClosing.Add(closePrice);
+                DataListSMA.Add(sumPrice / SMAperiod);
+                DataListEMA.Add(((closePrice - (DataListEMA[forEach - SMAperiod - 1])) * (2 / SMAperiod + 1)) + (DataListEMA[forEach - SMAperiod - 1]));
+            }
+            else if (forEach - SMAperiod == 0)
+            { 
+                DataListEMA.Insert(0, closePrice);
+                inSymbolDescription = FeedTable1s.FirstOrDefault().InstrumentTable1.InSymbolDescription;
+            }
+            forEach++;
         }
-        
+        //StateHasChanged();
+        //OnInitializedCustom();
     }
 
+    //protected void OnInitializedCustom()
     protected override void OnInitialized()
     {
+        //Task.Delay(2000); //ToDo: remove
         var colors = ColorUtility.CategoricalTwelveColors;
 
-        var labels = new List<string> { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+        //var labels = new List<string> { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+        var labels = new List<string> { };
+        labels = DataListMonth;
         var datasets = new List<IChartDataset>();
-        //context = DbFactory.CreateDbContext();
-
         var dataset1 = new LineChartDataset
             {
-                Label = "SMA",
-                //Data = new List<double?> { 7265791, 5899643, 6317759, 6315641, 5338211, 8496306, 7568556, 8538933, 8274297, 8657298, 7548388, 7764845 },
-                Data=DataList,
-                BackgroundColor = colors[0],
-                BorderColor = colors[0],
+                Label = "Closing",
+                Data = DataListClosing,
+                BackgroundColor = colors[2],
+                BorderColor = colors[2],
                 BorderWidth = 2,
                 HoverBorderWidth = 4,
-                // PointBackgroundColor = colors[0],
+                // PointBackgroundColor = colors[2],
                 // PointRadius = 0, // hide points
                 // PointHoverRadius = 4,
             };
@@ -62,8 +98,8 @@
 
         var dataset2 = new LineChartDataset
             {
-                Label = "EMA",
-                Data = DataList,
+                Label = "SMA",
+                Data = DataListSMA,
                 BackgroundColor = colors[1],
                 BorderColor = colors[1],
                 BorderWidth = 2,
@@ -76,13 +112,13 @@
 
         var dataset3 = new LineChartDataset
             {
-                Label = "Closing",
-                Data = DataList,
-                BackgroundColor = colors[2],
-                BorderColor = colors[2],
+                Label = "EMA",
+                Data = DataListEMA,
+                BackgroundColor = colors[0],
+                BorderColor = colors[0],
                 BorderWidth = 2,
                 HoverBorderWidth = 4,
-                // PointBackgroundColor = colors[2],
+                // PointBackgroundColor = colors[0],
                 // PointRadius = 0, // hide points
                 // PointHoverRadius = 4,
             };
@@ -94,10 +130,9 @@
         lineChartOptions.Responsive = true;
         lineChartOptions.Interaction = new Interaction { Mode = InteractionMode.Index };
 
-        lineChartOptions.Scales.X!.Title = new ChartAxesTitle { Text = "2025", Display = true };
+        lineChartOptions.Scales.X!.Title = new ChartAxesTitle { Text = "Month", Display = true };
         lineChartOptions.Scales.Y!.Title = new ChartAxesTitle { Text = "Price", Display = true };
-
-        lineChartOptions.Plugins.Title!.Text = "Portfolio Chart";
+        lineChartOptions.Plugins.Title!.Text = inSymbolDescription; //ToDo: reset variable issue
         lineChartOptions.Plugins.Title.Display = true;
     }
 

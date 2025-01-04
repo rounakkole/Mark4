@@ -9,7 +9,7 @@ namespace Mark3.Data.Tables
         public Decimal ClosePrice { get; set; } = 0;
         public int IntervalNum { get; set; }
         [DataType(DataType.DateTime)]
-        public DateTime? FeedDateTime { get; set; }
+        public DateTime FeedDateTime { get; set; }
         [DataType(DataType.DateTime)]
 
         public InstrumentTable1 InstrumentTable1 { get; set; } // Required reference navigation to principal
