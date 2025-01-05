@@ -7,13 +7,22 @@
 @inject IFeedService FeedService
 
 <PageTitle>LineChartData</PageTitle>
-<h3>Line Chart</h3>
-
-<div class="container-fluid overflow-x-auto">
-    <LineChart @ref="lineChart" Width="800" />
-</div>
+<!-- <h3>Line Chart</h3> -->
+@if (FeedTable1s == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="container-fluid overflow-x-auto">
+        <LineChart @ref="lineChart" Width="800" />
+    </div>
+}
 
 @code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
     private LineChart lineChart = default!;
     private LineChartOptions lineChartOptions = default!;
     private ChartData chartData = default!;
@@ -29,15 +38,15 @@
 
     protected override async Task OnInitializedAsync()
     {
-        int _instrumentId = 5; //ToDo: get dynamic value
-        int _intervalNum = 60;
-        int takeLast = 12 + 5;
+        int _instrumentId = Id;
+        int _intervalNum = 30; //1min=1 5min=5 10min=10 1hr=60 1d=24 1w=7 1mon=30 1yr=12
+        int _takeLast = 12 + 5;
         int forEach = 1;
 
-        FeedTable1s = await FeedService.GetFeedTable1sAsync(_instrumentId, _intervalNum, takeLast);
+        FeedTable1s = await FeedService.GetFeedTable1sAsync(_instrumentId, _intervalNum, _takeLast);
 
         List<double?> PreValues = new List<double?>() { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-        int SMAperiod = takeLast - 12;
+        int SMAperiod = _takeLast - 12;
         double? closePrice, sumPrice = 0;
 
         foreach (var FeedTable1 in FeedTable1s)
@@ -69,10 +78,9 @@
             forEach++;
         }
         //StateHasChanged();
-        //OnInitializedCustom();
+        OnInitialized();
     }
 
-    //protected void OnInitializedCustom()
     protected override void OnInitialized()
     {
         //Task.Delay(2000); //ToDo: remove
@@ -132,7 +140,7 @@
 
         lineChartOptions.Scales.X!.Title = new ChartAxesTitle { Text = "Month", Display = true };
         lineChartOptions.Scales.Y!.Title = new ChartAxesTitle { Text = "Price", Display = true };
-        lineChartOptions.Plugins.Title!.Text = inSymbolDescription; //ToDo: reset variable issue
+        lineChartOptions.Plugins.Title!.Text = inSymbolDescription;
         lineChartOptions.Plugins.Title.Display = true;
     }
 

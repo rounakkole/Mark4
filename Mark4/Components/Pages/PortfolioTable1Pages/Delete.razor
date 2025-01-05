@@ -47,7 +47,7 @@
         </dl>
         <EditForm method="post" Model="portfoliotable1" OnValidSubmit="DeletePortfolioTable1" FormName="delete" Enhance>
             <button type="submit" class="btn btn-danger" disabled="@(portfoliotable1 is null)">Delete</button> |
-            <a href="/portfoliotable1s">Back to List</a>
+            <a href="/portfoliotable1sNew">Back to List</a>
         </EditForm>
     }
 </div>
@@ -74,6 +74,6 @@
         using var context = DbFactory.CreateDbContext();
         context.PortfolioTable1.Remove(portfoliotable1!);
         await context.SaveChangesAsync();
-        NavigationManager.NavigateTo("/portfoliotable1s");
+        NavigationManager.NavigateTo("/portfoliotable1sNew");
     }
 }

@@ -33,6 +33,7 @@
     <!-- <PropertyColumn Property="portfoliotable1 => portfoliotable1.CreatedDate" /> -->
 
     <TemplateColumn Context="portfoliotable1">
+        <a href="@($"linechartdata?id={portfoliotable1.InstrumentTable1.Id}")">Chart</a> |
         <a href="@($"portfoliotable1s/edit?id={portfoliotable1.Id}")">Edit</a> |
         <!-- <a href="@($"portfoliotable1s/details?id={portfoliotable1.Id}")">Details</a> | -->
         <a href="@($"portfoliotable1s/delete?id={portfoliotable1.Id}")">Delete</a>

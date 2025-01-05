@@ -24,14 +24,14 @@ namespace Mark4.Services
             return feedTable1;
         }
 
-        public async Task<List<FeedTable1>> GetFeedTable1sAsync(int _instrumentId, int _intervalNum, int takeLast)
+        public async Task<List<FeedTable1>> GetFeedTable1sAsync(int _instrumentId, int _intervalNum, int _takeLast)
         {
             //var FeedTable1s = await _context.FeedTable1.ToListAsync();
             //var tickets = (await (from ...).ToListAsync()).Select(...);
             FilteredGrid = _context.FeedTable1.Where(m => (m.InstrumentId.Equals(_instrumentId))
                                                  && (m.IntervalNum.Equals(_intervalNum)))
             .OrderByDescending(m => m.FeedDateTime)
-            .Take(takeLast)
+            .Take(_takeLast)
             .OrderBy(m => m.FeedDateTime)
             .Include(m => m.InstrumentTable1);
             List<FeedTable1> FeedTable1s = await FilteredGrid.ToListAsync();
